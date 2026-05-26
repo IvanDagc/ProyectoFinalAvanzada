@@ -1,0 +1,18 @@
+.container {
+    margin-left: 270px;
+    padding: 30px;
+    color: white;
+    background: #0d0d0d;
+    min-height: 100vh;
+}
+
+table {
+    background: #1a1a1a;
+    color: white;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+thead {
+    background: #00bfff;
+}

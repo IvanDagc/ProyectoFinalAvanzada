@@ -1,0 +1,29 @@
+<div class="container mt-4">
+
+  <h2>Solicitudes</h2>
+
+  <table class="table table-bordered">
+
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Estado</th>
+        <th>Prioridad</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let s of solicitudes">
+
+        <td>{{ s.id }}</td>
+        <td>{{ s.tipoSolicitud }}</td>
+        <td>{{ s.estado }}</td>
+        <td>{{ s.prioridad }}</td>
+
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>

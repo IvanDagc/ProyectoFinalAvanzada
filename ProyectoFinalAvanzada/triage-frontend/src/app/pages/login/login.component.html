@@ -1,0 +1,31 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <h1>Sistema Triage</h1>
+
+    <p class="subtitle">
+      Gestión Académica Inteligente
+    </p>
+
+    <input
+      type="email"
+      class="form-control"
+      placeholder="Correo"
+      [(ngModel)]="correo"
+    >
+
+    <input
+      type="password"
+      class="form-control"
+      placeholder="Contraseña"
+      [(ngModel)]="password"
+    >
+
+    <button class="btn-login" (click)="login()">
+      Ingresar
+    </button>
+
+  </div>
+
+</div>
