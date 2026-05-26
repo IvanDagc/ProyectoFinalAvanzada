@@ -1,0 +1,16 @@
+# Angular
+node_modules/
+.angular/
+dist/
+
+# Java
+target/
+
+# IntelliJ
+.idea/
+
+# Logs
+*.log
+
+# VSCode
+.vscode/
