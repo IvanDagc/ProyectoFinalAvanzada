@@ -1,1 +1,87 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:        #0b0f1a;
+  --bg2:       #111827;
+  --bg3:       #1a2236;
+  --surface:   #1e2a40;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.13);
+
+  --accent:    #3b82f6;
+  --accent2:   #60a5fa;
+  --accent-glow: rgba(59,130,246,0.18);
+
+  --text:      #f1f5f9;
+  --text2:     #94a3b8;
+  --text3:     #475569;
+
+  --success:   #22c55e;
+  --warning:   #f59e0b;
+  --danger:    #ef4444;
+  --info:      #06b6d4;
+
+  --high:      #ef4444;
+  --medium:    #f59e0b;
+  --low:       #22c55e;
+  --critical:  #a855f7;
+
+  --sidebar-w: 260px;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --transition: 0.2s ease;
+
+  --font-body: 'DM Sans', sans-serif;
+  --font-head: 'Space Grotesk', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── Shared badge classes ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.badge-registrada  { background: rgba(148,163,184,0.12); color: #94a3b8; }
+.badge-clasificada { background: rgba(6,182,212,0.12);   color: #06b6d4; }
+.badge-en_atencion { background: rgba(245,158,11,0.12);  color: #f59e0b; }
+.badge-atendida    { background: rgba(59,130,246,0.12);  color: #60a5fa; }
+.badge-cerrada     { background: rgba(34,197,94,0.12);   color: #22c55e; }
+
+.badge-alta        { background: rgba(239,68,68,0.12);   color: #ef4444; }
+.badge-media       { background: rgba(245,158,11,0.12);  color: #f59e0b; }
+.badge-baja        { background: rgba(34,197,94,0.12);   color: #22c55e; }
+.badge-critica     { background: rgba(168,85,247,0.12);  color: #a855f7; }
+
+/* ── Utility ── */
+.page-content {
+  margin-left: var(--sidebar-w);
+  padding: 32px 36px;
+  min-height: 100vh;
+  background: var(--bg);
+}/* You can add global styles to this file, and also import other style files */

@@ -1,29 +1,231 @@
-<div class="container mt-4">
+<app-navbar></app-navbar>
 
-  <h2>Solicitudes</h2>
+<div class="page-content">
 
-  <table class="table table-bordered">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Solicitudes</h1>
+      <p class="page-sub">{{ paginacion.total }} solicitudes en el sistema</p>
+    </div>
+    <a routerLink="/nueva" class="btn-primary">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Nueva solicitud
+    </a>
+  </div>
 
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Tipo</th>
-        <th>Estado</th>
-        <th>Prioridad</th>
-      </tr>
-    </thead>
+  <!-- Filtros -->
+  <div class="filtros">
+    <div class="filtro-group">
+      <label>Estado</label>
+      <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="REGISTRADA">Registrada</option>
+        <option value="CLASIFICADA">Clasificada</option>
+        <option value="EN_ATENCION">En atención</option>
+        <option value="ATENDIDA">Atendida</option>
+        <option value="CERRADA">Cerrada</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <label>Tipo</label>
+      <select [(ngModel)]="filtroTipo" (change)="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="REGISTRO_ASIGNATURAS">Registro asignaturas</option>
+        <option value="HOMOLOGACION">Homologación</option>
+        <option value="CANCELACION_ASIGNATURAS">Cancelación</option>
+        <option value="SOLICITUD_CUPOS">Cupos</option>
+        <option value="CONSULTA_ACADEMICA">Consulta académica</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <label>Prioridad</label>
+      <select [(ngModel)]="filtroPrioridad" (change)="aplicarFiltros()">
+        <option value="">Todas</option>
+        <option value="CRITICA">Crítica</option>
+        <option value="ALTA">Alta</option>
+        <option value="MEDIA">Media</option>
+        <option value="BAJA">Baja</option>
+      </select>
+    </div>
+    <button class="btn-reset" (click)="resetFiltros()">Limpiar</button>
+  </div>
 
-    <tbody>
-      <tr *ngFor="let s of solicitudes">
+  <!-- Tabla -->
+  <div class="table-wrap">
+    <div class="loading-bar" *ngIf="cargando"></div>
 
-        <td>{{ s.id }}</td>
-        <td>{{ s.tipoSolicitud }}</td>
-        <td>{{ s.estado }}</td>
-        <td>{{ s.prioridad }}</td>
+    <table class="tabla" *ngIf="!cargando && solicitudes.length">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tipo</th>
+          <th>Solicitante</th>
+          <th>Responsable</th>
+          <th>Estado</th>
+          <th>Prioridad</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of solicitudes">
+          <td class="id-col">{{ s.id }}</td>
+          <td>{{ tipoLabel(s.tipo) }}</td>
+          <td>{{ s.nombreSolicitante ?? '—' }}</td>
+          <td>{{ s.nombreResponsable ?? '—' }}</td>
+          <td><span class="badge" [ngClass]="badgeEstado(s.estado)">{{ estadoLabel(s.estado) }}</span></td>
+          <td><span class="badge" [ngClass]="badgePrioridad(s.prioridad)">{{ prioridadLabel(s.prioridad) }}</span></td>
+          <td class="date-col">{{ s.fechaRegistro | date:'dd/MM/yy HH:mm' }}</td>
+          <td class="actions-col">
+            <button class="action-btn" title="Ver detalle" (click)="verDetalle(s)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <button class="action-btn" title="Clasificar" *ngIf="s.estado === 'REGISTRADA'" (click)="abrirClasificar(s)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </button>
+            <button class="action-btn" title="Marcar atendida" *ngIf="s.estado === 'EN_ATENCION'" (click)="marcarAtendida(s)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+            <button class="action-btn danger" title="Cerrar" *ngIf="s.estado === 'ATENDIDA'" (click)="abrirCerrar(s)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-      </tr>
-    </tbody>
+    <div class="empty-state" *ngIf="!cargando && !solicitudes.length">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="color:var(--text3);margin-bottom:12px">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+      <p>No se encontraron solicitudes con los filtros aplicados.</p>
+    </div>
+  </div>
 
-  </table>
+  <!-- Paginación -->
+  <div class="paginacion" *ngIf="paginacion.totalPaginas > 1">
+    <button class="pag-btn" [disabled]="paginacion.pagina === 0" (click)="cambiarPagina(paginacion.pagina - 1)">←</button>
+    <span>Página {{ paginacion.pagina + 1 }} de {{ paginacion.totalPaginas }}</span>
+    <button class="pag-btn" [disabled]="paginacion.pagina >= paginacion.totalPaginas - 1" (click)="cambiarPagina(paginacion.pagina + 1)">→</button>
+  </div>
 
+</div>
+
+<!-- ── Modal Detalle ── -->
+<div class="modal-overlay" *ngIf="solicitudDetalle" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Solicitud #{{ solicitudDetalle.id }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body" *ngIf="solicitudDetalle">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Tipo</span>
+          <span class="detail-val">{{ tipoLabel(solicitudDetalle.tipo) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Estado</span>
+          <span class="badge" [ngClass]="badgeEstado(solicitudDetalle.estado)">{{ estadoLabel(solicitudDetalle.estado) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Prioridad</span>
+          <span class="badge" [ngClass]="badgePrioridad(solicitudDetalle.prioridad)">{{ prioridadLabel(solicitudDetalle.prioridad) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Canal</span>
+          <span class="detail-val">{{ solicitudDetalle.canalOrigen }}</span>
+        </div>
+        <div class="detail-item full">
+          <span class="detail-label">Descripción</span>
+          <span class="detail-val">{{ solicitudDetalle.descripcion }}</span>
+        </div>
+        <div class="detail-item" *ngIf="solicitudDetalle.justificacionPrioridad">
+          <span class="detail-label">Justificación prioridad</span>
+          <span class="detail-val">{{ solicitudDetalle.justificacionPrioridad }}</span>
+        </div>
+      </div>
+
+      <!-- Historial -->
+      <div class="historial-section" *ngIf="historial.length">
+        <h4>Historial de acciones</h4>
+        <div class="historial-item" *ngFor="let h of historial">
+          <div class="historial-dot"></div>
+          <div>
+            <span class="historial-accion">{{ h.accion }}</span>
+            <span class="historial-meta">{{ h.usuarioNombre }} · {{ h.fecha | date:'dd/MM/yy HH:mm' }}</span>
+            <span class="historial-obs" *ngIf="h.observaciones">{{ h.observaciones }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal Clasificar ── -->
+<div class="modal-overlay" *ngIf="modalClasificar" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Clasificar solicitud #{{ solicitudActiva?.id }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Tipo de solicitud</label>
+        <select [(ngModel)]="formClasificar.tipo">
+          <option value="REGISTRO_ASIGNATURAS">Registro de asignaturas</option>
+          <option value="HOMOLOGACION">Homologación</option>
+          <option value="CANCELACION_ASIGNATURAS">Cancelación de asignaturas</option>
+          <option value="SOLICITUD_CUPOS">Solicitud de cupos</option>
+          <option value="CONSULTA_ACADEMICA">Consulta académica</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prioridad</label>
+        <select [(ngModel)]="formClasificar.prioridad">
+          <option value="BAJA">Baja</option>
+          <option value="MEDIA">Media</option>
+          <option value="ALTA">Alta</option>
+          <option value="CRITICA">Crítica</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Justificación</label>
+        <textarea [(ngModel)]="formClasificar.justificacion" rows="3" placeholder="Justifica la prioridad asignada..."></textarea>
+      </div>
+      <button class="btn-primary full" (click)="confirmarClasificar()" [disabled]="accionCargando">
+        {{ accionCargando ? 'Guardando...' : 'Clasificar solicitud' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal Cerrar ── -->
+<div class="modal-overlay" *ngIf="modalCerrar" (click)="cerrarModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Cerrar solicitud #{{ solicitudActiva?.id }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Observación de cierre</label>
+        <textarea [(ngModel)]="observacionCierre" rows="4" placeholder="Describe la resolución de la solicitud..."></textarea>
+      </div>
+      <button class="btn-primary full danger-btn" (click)="confirmarCerrar()" [disabled]="accionCargando">
+        {{ accionCargando ? 'Cerrando...' : 'Confirmar cierre' }}
+      </button>
+    </div>
+  </div>
 </div>

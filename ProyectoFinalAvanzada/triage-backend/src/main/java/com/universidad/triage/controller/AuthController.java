@@ -4,7 +4,7 @@ import com.universidad.triage.dto.auth.LoginRequest;
 import com.universidad.triage.dto.auth.LoginResponse;
 import com.universidad.triage.entity.Usuario;
 import com.universidad.triage.repository.UsuarioRepository;
-import com.universidad.triage.security.JwtService;
+import com.universidad.triage.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;

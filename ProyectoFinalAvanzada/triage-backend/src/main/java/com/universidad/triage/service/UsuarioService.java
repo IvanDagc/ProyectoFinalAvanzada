@@ -30,12 +30,12 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResumen registrar(RegistrarUsuarioRequest request) {
-        if (usuarioRepository.existsByCorreo(request.getCorreo())) {
-            throw new EmailDuplicadoException(request.getCorreo());
+        if (usuarioRepository.existsByCorreo(request.getEmail())) {
+            throw new EmailDuplicadoException(request.getEmail());
         }
         Usuario usuario = Usuario.builder()
                 .nombre(request.getNombre())
-                .correo(request.getCorreo())
+                .correo(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .rol(request.getRol())
                 .activo(true)
@@ -55,12 +55,12 @@ public class UsuarioService {
         if (request.getNombre() != null && !request.getNombre().isBlank()) {
             usuario.setNombre(request.getNombre());
         }
-        if (request.getCorreo() != null && !request.getCorreo().isBlank()) {
-            if (!request.getCorreo().equals(usuario.getCorreo())
-                    && usuarioRepository.existsByCorreo(request.getCorreo())) {
-                throw new EmailDuplicadoException(request.getCorreo());
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            if (!request.getEmail().equals(usuario.getCorreo())
+                && usuarioRepository.existsByCorreo(request.getEmail())) {
+                throw new EmailDuplicadoException(request.getEmail());
             }
-            usuario.setCorreo(request.getCorreo());
+            usuario.setCorreo(request.getEmail());
         }
         return toResumen(usuarioRepository.save(usuario));
     }
@@ -87,7 +87,7 @@ public class UsuarioService {
         return UsuarioResumen.builder()
                 .id(u.getId())
                 .nombre(u.getNombre())
-                .correo(u.getCorreo())
+                .email(u.getCorreo())
                 .rol(u.getRol())
                 .activo(u.isActivo())
                 .build();
