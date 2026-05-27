@@ -38,7 +38,7 @@ public class AuthController {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        String token = jwtService.generateToken(usuario.getCorreo());
+        String token = jwtService.generateToken(usuario);
 
         return new LoginResponse(token);
     }

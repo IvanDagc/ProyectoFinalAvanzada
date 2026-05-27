@@ -85,3 +85,8 @@ html, body {
   min-height: 100vh;
   background: var(--bg);
 }/* You can add global styles to this file, and also import other style files */
+
+/* Fallback inmediato si Google Fonts tarda */
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
